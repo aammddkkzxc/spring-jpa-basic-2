@@ -10,12 +10,17 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "team_id")
     private Team team;
 
     private String name;
     private int age;
+
+    public void createRelation(Team team) {
+        this.team = team;
+        team.getMemberList().add(this);
+    }
 
     public Long getId() {
         return id;
