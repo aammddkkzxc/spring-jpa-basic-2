@@ -20,16 +20,20 @@ public class JpaMain {
 
         try {
 
-            Member member = new Member();
-            member.setName("hi");
-            member.setAge(10);
-            em.persist(member);
+            for (int i = 0; i < 100; i++) {
+
+                Member member = new Member();
+                member.setName("member" + i);
+                member.setAge(i);
+                em.persist(member);
+
+            }
 
             em.flush();
             em.clear();
 
             Member findMember = em.createQuery("select m from Member m where m.name = :name", Member.class)
-                    .setParameter("name", "hi")
+                    .setParameter("name", "member0")
                     .getSingleResult();
 
             //이렇게 하는 거 보다 조인 하는 것을 나타내는 것이 좋음
@@ -47,6 +51,13 @@ public class JpaMain {
 
             System.out.println(findMember.getName());
             System.out.println(memberDTOList.get(0).toString());
+
+            List<Member> members = em.createQuery("select m from Member m", Member.class)
+                    .setFirstResult(0)
+                    .setMaxResults(10)
+                    .getResultList();
+
+            System.out.println(members);
 
             tx.commit();
         } catch (Exception e) {
