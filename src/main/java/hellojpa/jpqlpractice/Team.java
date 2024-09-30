@@ -1,6 +1,7 @@
 package hellojpa.jpqlpractice;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ public class Team {
     @Column(name = "team_id")
     private Long id;
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "team")
     private List<Member> memberList = new ArrayList<>();
 

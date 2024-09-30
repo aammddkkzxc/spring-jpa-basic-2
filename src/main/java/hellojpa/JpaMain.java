@@ -42,13 +42,16 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            String query = "select m from Member m";
+//            String query = "select m from Member m";
 //            String query = "select m from Member m join m.team t";
 //            String query = "select m from Member m join fetch m.team t";
 //            String query = "select m, t from Member m join fetch m.team t";
 //            String query = "select m from Member m left join m.team t";
 //            String query = "select t from Team t join fetch t.memberList";
-            List resultList = em.createQuery(query).getResultList();
+            String query = "select t from Team t";
+//            List resultList = em.createQuery(query).getResultList();
+            List resultList = em.createQuery(query).setFirstResult(0).setMaxResults(2).getResultList();
+                    ;
 //            for (Team t : resultList) {
 //                for (Member member : t.getMemberList()) {
 //                    System.out.println(t. getName() + "|" + t.getMemberList().size() + "|" + member.getName());
