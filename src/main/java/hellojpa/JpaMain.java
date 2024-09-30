@@ -79,6 +79,14 @@ public class JpaMain {
             List<String> nullIfResult = em.createQuery(queryNullIf, String.class).getResultList();
             System.out.println(nullIfResult);
 
+            String function = "select concat('hello', 'world') from Member m";
+            List<String> functionResult = em.createQuery(function, String.class).getResultList();
+            System.out.println(functionResult);
+
+            String sizeQuery = "select size(t.memberList) from Team t";
+            List<Integer> sizeResult = em.createQuery(sizeQuery, Integer.class).getResultList();
+            System.out.println(sizeResult);
+
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
