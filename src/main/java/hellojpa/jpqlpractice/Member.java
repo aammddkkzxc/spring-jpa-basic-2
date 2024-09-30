@@ -17,6 +17,9 @@ public class Member {
     private String name;
     private int age;
 
+    @Enumerated(EnumType.STRING)
+    private MemberType type;
+
     public void createRelation(Team team) {
         this.team = team;
         team.getMemberList().add(this);
@@ -52,6 +55,14 @@ public class Member {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public MemberType getType() {
+        return type;
+    }
+
+    public void setType(MemberType type) {
+        this.type = type;
     }
 
     @Override

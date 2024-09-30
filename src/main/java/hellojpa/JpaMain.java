@@ -1,9 +1,6 @@
 package hellojpa;
 
-import hellojpa.jpqlpractice.Address;
-import hellojpa.jpqlpractice.Member;
-import hellojpa.jpqlpractice.MemberDTO;
-import hellojpa.jpqlpractice.Team;
+import hellojpa.jpqlpractice.*;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -30,6 +27,7 @@ public class JpaMain {
                     member.setName("member" + i + j);
                     member.setAge(j);
                     member.createRelation(team);
+                    member.setType(MemberType.USER);
                     em.persist(member);
 
                 }
