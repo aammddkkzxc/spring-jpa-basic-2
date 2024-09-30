@@ -17,84 +17,45 @@ public class JpaMain {
 
         try {
 
-            for (int i = 0; i < 10; i++) {
-                Team team = new Team();
-                team.setName("team" + i);
+            Team teamA = new Team();
+            teamA.setName("teamA");
 
-                for (int j = 0; j < 10; j++) {
+            Team teamB = new Team();
+            teamB.setName("teamB");
 
-                    Member member = new Member();
-                    member.setName("member" + i + j);
-                    member.setAge(j);
-                    member.createRelation(team);
-                    member.setType(MemberType.USER);
-                    em.persist(member);
 
-                }
-            }
+            Member member1 = new Member();
+            member1.setName("회원1");
+            Member member2 = new Member();
+            member2.setName("회원2");
+            Member member3 = new Member();
+            member3.setName("회원3");
+
+            member1.setTeam(teamA);
+            member2.setTeam(teamA);
+            member3.setTeam(teamB);
+
+            em.persist(member1);
+            em.persist(member2);
+            em.persist(member3);
 
             em.flush();
             em.clear();
 
-            List<Team> teams = em.createQuery("select t from Member m join m.team t", Team.class)
-                    .getResultList();
+            String query = "select m from Member m";
+//            String query = "select m from Member m join m.team t";
+//            String query = "select m from Member m join fetch m.team t";
+//            String query = "select m, t from Member m join fetch m.team t";
+//            String query = "select m from Member m left join m.team t";
+//            String query = "select t from Team t join fetch t.memberList";
+            List resultList = em.createQuery(query).getResultList();
+//            for (Team t : resultList) {
+//                for (Member member : t.getMemberList()) {
+//                    System.out.println(t. getName() + "|" + t.getMemberList().size() + "|" + member.getName());
+//                }
+//            }
+            System.out.println(resultList.size());
 
-            List<Member> membersInner = em.createQuery("select m from Member m join m.team t", Member.class)
-                    .setFirstResult(0)
-                    .setMaxResults(5)
-                    .getResultList();
-
-            List<Member> membersLeft = em.createQuery("select m from Member m left join m.team t", Member.class)
-                    .setFirstResult(0)
-                    .setMaxResults(5)
-                    .getResultList();
-
-            List<Member> theta = em.createQuery("select m from Member m, Team t where m.name = t.name", Member.class)
-                    .setFirstResult(0)
-                    .setMaxResults(5)
-                    .getResultList();
-
-            List<Member> filter = em.createQuery("select m from Member m left join m.team t on t.name = 'team5'", Member.class)
-                    .getResultList();
-
-            System.out.println(teams);
-            System.out.println(membersInner);
-            System.out.println(membersLeft);
-            System.out.println(theta);
-            System.out.println(filter);
-
-            String queryCase = "select " +
-                        "case when m.age <= 10 then '학생요금' " +
-                        "     when m.age >= 60 then '일반요금' " +
-                        "     else '기본요금' end " +
-                        "from Member m";
-            List<String> CaseResult = em.createQuery(queryCase, String.class).getResultList();
-            System.out.println(CaseResult);
-
-            String queryCoalesce = "select coalesce(m.name, '이름 없는 회원') from Member m";
-            List<String> coalesceResult = em.createQuery(queryCoalesce, String.class).getResultList();
-            System.out.println(coalesceResult);
-
-            String queryNullIf = "select nullif(m.name, 'member15') from Member m";
-            List<String> nullIfResult = em.createQuery(queryNullIf, String.class).getResultList();
-            System.out.println(nullIfResult);
-
-            String function = "select concat('hello', 'world') from Member m";
-            List<String> functionResult = em.createQuery(function, String.class).getResultList();
-            System.out.println(functionResult);
-
-            String sizeQuery = "select size(t.memberList) from Team t";
-            List<Integer> sizeResult = em.createQuery(sizeQuery, Integer.class).getResultList();
-            System.out.println(sizeResult);
-
-            //컬렉션 자체를 가져오는 것은 가능하나 더 탐색 불가
-            String badJoinQuery = "select t.memberList from Team t";
-            List joinResult = em.createQuery(badJoinQuery, List.class).getResultList();
-            System.out.println(joinResult);
-
-            String goodJoinQuery = "select m.name from Team t join t.memberList m";
-            List<String> goodJoinResult = em.createQuery(goodJoinQuery, String.class).getResultList();
-            System.out.println(goodJoinResult);
 
             tx.commit();
         } catch (Exception e) {
