@@ -87,6 +87,15 @@ public class JpaMain {
             List<Integer> sizeResult = em.createQuery(sizeQuery, Integer.class).getResultList();
             System.out.println(sizeResult);
 
+            //컬렉션 자체를 가져오는 것은 가능하나 더 탐색 불가
+            String badJoinQuery = "select t.memberList from Team t";
+            List joinResult = em.createQuery(badJoinQuery, List.class).getResultList();
+            System.out.println(joinResult);
+
+            String goodJoinQuery = "select m.name from Team t join t.memberList m";
+            List<String> goodJoinResult = em.createQuery(goodJoinQuery, String.class).getResultList();
+            System.out.println(goodJoinResult);
+
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
