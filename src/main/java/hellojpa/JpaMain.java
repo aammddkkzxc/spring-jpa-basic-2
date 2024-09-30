@@ -63,6 +63,22 @@ public class JpaMain {
             System.out.println(theta);
             System.out.println(filter);
 
+            String queryCase = "select " +
+                        "case when m.age <= 10 then '학생요금' " +
+                        "     when m.age >= 60 then '일반요금' " +
+                        "     else '기본요금' end " +
+                        "from Member m";
+            List<String> CaseResult = em.createQuery(queryCase, String.class).getResultList();
+            System.out.println(CaseResult);
+
+            String queryCoalesce = "select coalesce(m.name, '이름 없는 회원') from Member m";
+            List<String> coalesceResult = em.createQuery(queryCoalesce, String.class).getResultList();
+            System.out.println(coalesceResult);
+
+            String queryNullIf = "select nullif(m.name, 'member15') from Member m";
+            List<String> nullIfResult = em.createQuery(queryNullIf, String.class).getResultList();
+            System.out.println(nullIfResult);
+
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
