@@ -26,10 +26,13 @@ public class JpaMain {
 
             Member member1 = new Member();
             member1.setName("회원1");
+            member1.setAge(12);
             Member member2 = new Member();
             member2.setName("회원2");
+            member2.setAge(18);
             Member member3 = new Member();
             member3.setName("회원3");
+            member3.setAge(25);
 
             member1.setTeam(teamA);
             member2.setTeam(teamA);
@@ -39,26 +42,28 @@ public class JpaMain {
             em.persist(member2);
             em.persist(member3);
 
-            em.flush();
+//            em.flush();
+
+            //벌크 연산, jpql임으로 플러쉬 자동 호출
+            String query = "update Member m set m.age = 20 where m.age >= 15";
+            int updatedMemberNumber = em.createQuery(query).executeUpdate();
+            System.out.println(updatedMemberNumber);
+
+            //db에 바로 반영 되어서 영속성 컨텍스트에는 그대로
+            System.out.println("member1 persistance context = " + member1.getAge());
+            System.out.println("member2 persistance context = " + member2.getAge());
+            System.out.println("member3 persistance context = " + member3.getAge());
+
+            //find해도 영속성 컨텍스트 값 가져옴
+            System.out.println("member1 real value = " + em.find(Member.class, member1.getId()).getAge());
+            System.out.println("member2 real value = " + em.find(Member.class, member2.getId()).getAge());
+            System.out.println("member3 real value = " + em.find(Member.class, member3.getId()).getAge());
+
             em.clear();
 
-//            String query = "select m from Member m";
-//            String query = "select m from Member m join m.team t";
-//            String query = "select m from Member m join fetch m.team t";
-//            String query = "select m, t from Member m join fetch m.team t";
-//            String query = "select m from Member m left join m.team t";
-//            String query = "select t from Team t join fetch t.memberList";
-            String query = "select t from Team t";
-//            List resultList = em.createQuery(query).getResultList();
-            List resultList = em.createQuery(query).setFirstResult(0).setMaxResults(2).getResultList();
-                    ;
-//            for (Team t : resultList) {
-//                for (Member member : t.getMemberList()) {
-//                    System.out.println(t. getName() + "|" + t.getMemberList().size() + "|" + member.getName());
-//                }
-//            }
-            System.out.println(resultList.size());
-
+            System.out.println("member1 real value = " + em.find(Member.class, member1.getId()).getAge());
+            System.out.println("member2 real value = " + em.find(Member.class, member2.getId()).getAge());
+            System.out.println("member3 real value = " + em.find(Member.class, member3.getId()).getAge());
 
             tx.commit();
         } catch (Exception e) {
